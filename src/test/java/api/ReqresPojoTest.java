@@ -1,5 +1,6 @@
 package api;
 
+import api.color.ColorData;
 import api.registration.Registration;
 import api.registration.SuccessfulRegistration;
 import api.registration.UnsuccessfulRegistration;
@@ -9,6 +10,7 @@ import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static io.restassured.RestAssured.given;
 
@@ -78,6 +80,28 @@ public class ReqresPojoTest {
                 .extract().as(UnsuccessfulRegistration.class);
         Assertions.assertNotNull(unsuccessfulRegistration.getError());
         Assertions.assertEquals("Missing password", unsuccessfulRegistration.getError());
+    }
+
+    /**
+     * Используя сервис https://reqres.in/ убедиться, что операция LIST<RESOURCE> возвращает данные,
+     * отсортированные по годам.
+     */
+    @Test
+    @DisplayName("Года правильно отсортированы")
+    public void checkSortedYearsTest() {
+        Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpecOK200());
+        List<ColorData> data = given()
+                .when()
+                .get("/api/unknown")
+                .then()
+                .log().all()
+                .extract().body().jsonPath().getList("data", ColorData.class);
+
+        List<Integer> dataYears = data.stream().map(ColorData::getYear).collect(Collectors.toList());
+        List<Integer> sortedDataYears = dataYears.stream().sorted().collect(Collectors.toList());
+        Assertions.assertEquals(dataYears, sortedDataYears);
+        System.out.println(dataYears);
+        System.out.println(sortedDataYears);
     }
 }
 
