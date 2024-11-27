@@ -19,6 +19,26 @@ public class ReqresPojoTest {
     private final static String URL = "https://reqres.in/";
 
     /**
+     * Убедиться что пользователя с ID 23 не существует на сайте https://reqres.in/
+     */
+    @Test
+    @DisplayName("Пользователь с id 23 не существует")
+    public void checkUserNotFound() {
+        Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpecNotFound404());
+        UserData user = given()
+                .when()
+                .contentType(ContentType.JSON)
+                .get("/api/users/23")
+                .then().log().all()
+                .extract().as(UserData.class);
+        Assertions.assertNull(user.getId());
+        Assertions.assertNull(user.getAvatar());
+        Assertions.assertNull(user.getEmail());
+        Assertions.assertNull(user.getFirst_name());
+        Assertions.assertNull(user.getLast_name());
+    }
+
+    /**
      * 1. Получить список пользователей со второй страница на сайте https://reqres.in/
      * 2. Убедиться что id пользователей содержаться в их avatar;
      * 3. Убедиться, что email пользователей имеет окончание reqres.in;
@@ -35,7 +55,6 @@ public class ReqresPojoTest {
                 .extract().body().jsonPath().getList("data", UserData.class);
         users.forEach(user -> Assertions.assertTrue(user.getAvatar().contains(String.valueOf(user.getId()))));
         users.forEach(user -> Assertions.assertTrue(user.getEmail().endsWith("reqres.in")));
-        int i = 42;
     }
 
     /**
