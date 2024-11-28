@@ -4,11 +4,18 @@ import api.color.ColorData;
 import api.registration.Registration;
 import api.registration.SuccessfulRegistration;
 import api.registration.UnsuccessfulRegistration;
+import api.user.UserData;
+import api.user.UserTime;
+import api.user.UserTimeResponse;
 import io.restassured.http.ContentType;
+import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
+import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -121,6 +128,44 @@ public class ReqresPojoTest {
         Assertions.assertEquals(dataYears, sortedDataYears);
         System.out.println(dataYears);
         System.out.println(sortedDataYears);
+    }
+
+    /**
+     * Тест 4.1
+     * Используя сервис https://reqres.in/ попробовать удалить второго пользователя и сравнить статус-код
+     */
+    @Test
+    @DisplayName("Удаление пользователя")
+    public void deleteUserTest() {
+        Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpec(204));
+        given()
+                .when()
+                .delete("/api/users/2")
+                .then()
+                .log().all();
+    }
+
+    /**
+     * Используя сервис https://reqres.in/ обновить информацию о пользователе и сравнить дату обновления с текущей датой на машине
+     */
+    @Test
+    @DisplayName("Время сервера и компьютера совпадают")
+    public void checkServerAndPcDateTest(){
+        Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpecOK200());
+        UserTime user = new UserTime("morpheus","zion resident");
+
+        UserTimeResponse userTimeResponse = given()
+                .body(user)
+                .when()
+                .put("/api/users/2")
+                .then().log().all()
+                .extract().as(UserTimeResponse.class);
+
+        // Format both times to remove seconds and milliseconds
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+        String serverTime = LocalDateTime.parse(userTimeResponse.getUpdatedAt(), DateTimeFormatter.ISO_DATE_TIME).format(formatter);
+        String computerTime = LocalDateTime.now(ZoneOffset.UTC).format(formatter);
+        Assertions.assertEquals(serverTime, computerTime);
     }
 }
 
