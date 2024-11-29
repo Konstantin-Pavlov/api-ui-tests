@@ -46,7 +46,7 @@ public class ReqresNoPojoTest {
     }
 
     @Test
-    public void successUserRegTestNoPojo(){
+    public void successfulUserRegTestNoPojo() {
         Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpecOK200());
         Map<String, String> user = new HashMap<>();
         user.put("email", "eve.holt@reqres.in");
@@ -60,7 +60,100 @@ public class ReqresNoPojoTest {
         JsonPath jsonPath = response.jsonPath();
         int id = jsonPath.get("id");
         String token = jsonPath.get("token");
-        Assertions.assertEquals(4,id);
+        Assertions.assertEquals(4, id);
         Assertions.assertEquals("QpwL5tke4Pnpja7X4", token);
     }
+
+    @Test
+    public void unsuccessfulUserRegNoPojo() {
+        Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpec(201));
+        Map<String, String> user = Map.of(
+                "name", "morpheus",
+                "job", "leader"
+        );
+        Response response = given()
+                .body(user)
+                .when()
+                .post("api/users")
+                .then().log().all()
+                .extract().response();
+        JsonPath jsonPath = response.jsonPath();
+
+        Assertions.assertEquals("morpheus", jsonPath.get("name"));
+        Assertions.assertEquals("leader", jsonPath.get("job"));
+    }
+
+    @Test
+    public void successfulUserDeletionNoPojo() {
+        Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpec(204));
+        given()
+                .when()
+                .delete("api/users/2")
+                .then().log().all();
+    }
+
+    @Test
+    public void successfulUserLoginNoPojo() {
+        Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpecOK200());
+        Map<String, String> user = Map.of(
+                "email", "eve.holt@reqres.in",
+                "password", "cityslicka"
+        );
+        Response response = given()
+                .body(user)
+                .when()
+                .post("api/login")
+                .then().log().all()
+                .extract().response();
+        JsonPath jsonPath = response.jsonPath();
+
+        Assertions.assertEquals("QpwL5tke4Pnpja7X4", jsonPath.get("token"));
+    }
+
+    @Test
+    public void unsuccessfulUserLoginNoPojo() {
+        Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpecError400());
+        Map<String, String> user = Map.of(
+                "email", "peter@klaven"
+        );
+        Response response = given()
+                .body(user)
+                .when()
+                .post("api/login")
+                .then().log().all()
+                .extract().response();
+        JsonPath jsonPath = response.jsonPath();
+
+        Assertions.assertEquals("Missing password", jsonPath.get("error"));
+    }
+
+    @Test
+    public void resourceNotFoundNoPojo() {
+        Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpecNotFound404());
+        Map<String, String> user = Map.of(
+                "email", "peter@klaven"
+        );
+        given()
+                .when()
+                .get("api/unknown/23")
+                .then().log().all();
+    }
+
+    @Test
+    public void checkSortedYearsTestNoPojo() {
+        Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpecOK200());
+        Response response = given()
+                .when()
+                .get("api/unknown")
+                .then().log().all()
+                .body("data.year", notNullValue())
+                .extract().response();
+        JsonPath jsonPath = response.jsonPath();
+
+        List<Integer> years = jsonPath.get("data.year");
+        List<Integer> sortedYears = years.stream().sorted().toList();
+
+        Assertions.assertEquals(sortedYears, years);
+    }
+
 }
