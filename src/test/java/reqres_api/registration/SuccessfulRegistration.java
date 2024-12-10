@@ -1,4 +1,4 @@
-package api.registration;
+package reqres_api.registration;
 
 import lombok.*;
 import lombok.experimental.FieldDefaults;

@@ -1,4 +1,4 @@
-package api.user;
+package reqres_api.user;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

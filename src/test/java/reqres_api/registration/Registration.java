@@ -1,4 +1,4 @@
-package api.color;
+package reqres_api.registration;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -10,10 +10,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class ColorData {
-    Integer id;
-    String name;
-    Integer year;
-    String color;
-    String pantone_value;
+public class Registration {
+    String email;
+    String password;
 }

@@ -1,14 +1,13 @@
-package api;
+package reqres_api;
 
-import api.color.ColorData;
-import api.registration.Registration;
-import api.registration.SuccessfulRegistration;
-import api.registration.UnsuccessfulRegistration;
-import api.user.UserData;
-import api.user.UserTime;
-import api.user.UserTimeResponse;
+import reqres_api.color.ColorData;
+import reqres_api.registration.Registration;
+import reqres_api.registration.SuccessfulRegistration;
+import reqres_api.registration.UnsuccessfulRegistration;
+import reqres_api.user.UserData;
+import reqres_api.user.UserTime;
+import reqres_api.user.UserTimeResponse;
 import io.restassured.http.ContentType;
-import org.junit.Assert;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -35,7 +34,7 @@ public class ReqresPojoTest {
         UserData user = given()
                 .when()
                 .contentType(ContentType.JSON)
-                .get("/api/users/23")
+                .get("/reqres_api/users/23")
                 .then().log().all()
                 .extract().as(UserData.class);
         Assertions.assertNull(user.getId());
@@ -57,7 +56,7 @@ public class ReqresPojoTest {
         List<UserData> users = given()
                 .when()
                 .contentType(ContentType.JSON)
-                .get("api/users?page=2")
+                .get("reqres_api/users?page=2")
                 .then().log().all()
                 .extract().body().jsonPath().getList("data", UserData.class);
         users.forEach(user -> Assertions.assertTrue(user.getAvatar().contains(String.valueOf(user.getId()))));
@@ -78,7 +77,7 @@ public class ReqresPojoTest {
         SuccessfulRegistration successUserReg = given()
                 .body(user)
                 .when()
-                .post("api/register")
+                .post("reqres_api/register")
                 .then().log().all()
                 .extract().as(SuccessfulRegistration.class);
         Assertions.assertNotNull(successUserReg.getId());
@@ -100,7 +99,7 @@ public class ReqresPojoTest {
         UnsuccessfulRegistration unsuccessfulRegistration = given()
                 .body(registration)
                 .when()
-                .post("/api/register")
+                .post("/reqres_api/register")
                 .then()  //.assertThat().statusCode(400) проверить статус ошибки, если не указана спецификация
                 .log().body()
                 .extract().as(UnsuccessfulRegistration.class);
@@ -118,7 +117,7 @@ public class ReqresPojoTest {
         Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpecOK200());
         List<ColorData> data = given()
                 .when()
-                .get("/api/unknown")
+                .get("/reqres_api/unknown")
                 .then()
                 .log().all()
                 .extract().body().jsonPath().getList("data", ColorData.class);
@@ -140,7 +139,7 @@ public class ReqresPojoTest {
         Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpec(204));
         given()
                 .when()
-                .delete("/api/users/2")
+                .delete("/reqres_api/users/2")
                 .then()
                 .log().all();
     }
@@ -157,7 +156,7 @@ public class ReqresPojoTest {
         UserTimeResponse userTimeResponse = given()
                 .body(user)
                 .when()
-                .put("/api/users/2")
+                .put("/reqres_api/users/2")
                 .then().log().all()
                 .extract().as(UserTimeResponse.class);
 

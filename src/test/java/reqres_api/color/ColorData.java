@@ -1,15 +1,19 @@
-package api.user;
+package reqres_api.color;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
-import lombok.Getter;
+import lombok.Data;
 import lombok.NoArgsConstructor;
 import lombok.experimental.FieldDefaults;
 
-@Getter
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UserTimeResponse extends UserTime {
-    String updatedAt;
+public class ColorData {
+    Integer id;
+    String name;
+    Integer year;
+    String color;
+    String pantone_value;
 }

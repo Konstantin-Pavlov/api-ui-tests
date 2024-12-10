@@ -1,4 +1,4 @@
-package api.registration;
+package reqres_api.user;
 
 import lombok.AccessLevel;
 import lombok.AllArgsConstructor;
@@ -10,6 +10,7 @@ import lombok.experimental.FieldDefaults;
 @AllArgsConstructor
 @NoArgsConstructor
 @FieldDefaults(level = AccessLevel.PRIVATE)
-public class UnsuccessfulRegistration {
-    String error;
+public class UserTime {
+    String name;
+    String job;
 }

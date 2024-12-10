@@ -1,4 +1,4 @@
-package api;
+package reqres_api;
 
 import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
@@ -21,7 +21,7 @@ public class ReqresNoPojoTest {
         Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpecOK200());
         Response response = given()
                 .when()
-                .get("api/users?page=2")
+                .get("reqres_api/users?page=2")
                 .then().log().all()
                 .body("page", equalTo(2))
                 .body("data.id", notNullValue())
@@ -54,7 +54,7 @@ public class ReqresNoPojoTest {
         Response response = given()
                 .body(user)
                 .when()
-                .post("api/register")
+                .post("reqres_api/register")
                 .then().log().all()
                 .extract().response();
         JsonPath jsonPath = response.jsonPath();
@@ -74,7 +74,7 @@ public class ReqresNoPojoTest {
         Response response = given()
                 .body(user)
                 .when()
-                .post("api/users")
+                .post("reqres_api/users")
                 .then().log().all()
                 .extract().response();
         JsonPath jsonPath = response.jsonPath();
@@ -88,7 +88,7 @@ public class ReqresNoPojoTest {
         Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpec(204));
         given()
                 .when()
-                .delete("api/users/2")
+                .delete("reqres_api/users/2")
                 .then().log().all();
     }
 
@@ -102,7 +102,7 @@ public class ReqresNoPojoTest {
         Response response = given()
                 .body(user)
                 .when()
-                .post("api/login")
+                .post("reqres_api/login")
                 .then().log().all()
                 .extract().response();
         JsonPath jsonPath = response.jsonPath();
@@ -119,7 +119,7 @@ public class ReqresNoPojoTest {
         Response response = given()
                 .body(user)
                 .when()
-                .post("api/login")
+                .post("reqres_api/login")
                 .then().log().all()
                 .extract().response();
         JsonPath jsonPath = response.jsonPath();
@@ -135,7 +135,7 @@ public class ReqresNoPojoTest {
         );
         given()
                 .when()
-                .get("api/unknown/23")
+                .get("reqres_api/unknown/23")
                 .then().log().all();
     }
 
@@ -144,7 +144,7 @@ public class ReqresNoPojoTest {
         Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpecOK200());
         Response response = given()
                 .when()
-                .get("api/unknown")
+                .get("reqres_api/unknown")
                 .then().log().all()
                 .body("data.year", notNullValue())
                 .extract().response();
