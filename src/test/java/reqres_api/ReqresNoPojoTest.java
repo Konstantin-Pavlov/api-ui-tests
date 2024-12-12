@@ -130,9 +130,6 @@ public class ReqresNoPojoTest {
     @Test
     public void resourceNotFoundNoPojo() {
         Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpecNotFound404());
-        Map<String, String> user = Map.of(
-                "email", "peter@klaven"
-        );
         given()
                 .when()
                 .get("reqres_api/unknown/23")
@@ -154,6 +151,31 @@ public class ReqresNoPojoTest {
         List<Integer> sortedYears = years.stream().sorted().toList();
 
         Assertions.assertEquals(sortedYears, years);
+    }
+
+    @Test
+    public void testDelayedResponse() {
+        Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpecOK200());
+
+        Response response = given()
+                .param("delay", "3") // Introduce a delay of 3 seconds in the response
+                .when()
+                .get("/api/users")
+                .then().log().all()
+                .extract()
+                .response();
+
+        long responseTime = response.getTime();
+        System.out.println("Response time: " + responseTime + " ms");
+
+        // Assert that the response time is greater than or equal to 3000 ms (3 seconds)
+        Assertions.assertTrue(responseTime >= 3000, "Response time is less than expected delay");
+
+        // Additional check to ensure the response contains valid data
+        JsonPath jsonPath = response.jsonPath();
+        String lastName = jsonPath.get("data[0].last_name");
+        Assertions.assertEquals(lastName, "Bluth");
+        response.then().body("data[0].first_name", equalTo("George"));
     }
 
 }

@@ -1,23 +1,78 @@
 package demoqa_ui;
 
-import org.junit.jupiter.api.Assertions;
+import com.github.javafaker.Faker;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 public class PracticeFormTest extends BaseSelenideTest {
-    private final static String BASE_URL = "https://demoqa.com/automation-practice-form";
-    private final static String SEARCH_STRING = "Чем iPhone 13 отличается от iPhone 12";
-    private final static String EXPECTED_WORD = "iphone-12";
+    Faker faker = new Faker();
+
+    private final static String BASE_URL = "https://demoqa.com/";
+    private final static String FILENAME = "cat.jpeg";
+    private final static String FILEPATH = "src/test/resources/files/";
+
+    private String firstName;
+    private String lastName;
+    private String email;
+    private String phone;
+    private String year;
+    private String month;
+    private String day;
+    private String subject;
+    private String hobbies;
+    private String currentAddress;
+    private String state;
+    private String city;
+    private String gender;
+
+    @BeforeEach
+    public void setup() {
+        firstName = faker.name().firstName();
+        lastName = faker.name().lastName();
+        email = faker.internet().emailAddress();
+        phone = faker.phoneNumber().subscriberNumber(10);
+        currentAddress = faker.address().fullAddress();
+        gender = "Male";
+        year = "1973";
+        month = "February";
+        day = "08";
+        subject = "Computer Science";
+        hobbies = "Reading";
+        state = "Uttar Pradesh";
+        city = "Merrut";
+    }
 
     @Test
     public void testFillTheForm() {
         PracticeFormPage practiceFormPage = new PracticeFormPage(BASE_URL);
-        practiceFormPage.selectGender("Male");
-        practiceFormPage.setFirstName("Tom");
-        practiceFormPage.setLastName("Brown");
-        practiceFormPage.setEmail("Brown@email.com");
-        String firstNameActualValue = practiceFormPage.getFirstNameValue();
-        String lastNameActualValue = practiceFormPage.getLastNameValue();
-        Assertions.assertEquals("Tom", firstNameActualValue);
-        Assertions.assertEquals("Brown", lastNameActualValue);
+        practiceFormPage.openFormsPage();
+        practiceFormPage.pressFormButtonLeftSide();
+        practiceFormPage.setFirstName(firstName);
+        practiceFormPage.setLastName(lastName);
+        practiceFormPage.setEmail(email);
+        practiceFormPage.setPhoneNumber(phone);
+        practiceFormPage.setDateOfBirth(year, month, day);
+        practiceFormPage.setSubject(subject);
+        practiceFormPage.setHobie(hobbies);
+        practiceFormPage.uploadFile(FILEPATH, FILENAME);
+        practiceFormPage.setCurrentAddress(currentAddress);
+        practiceFormPage.setCurrentState(state);
+        practiceFormPage.setCurrentCity(city);
+        practiceFormPage.selectGender(gender);
+
+        practiceFormPage.submitForm();
+
+        practiceFormPage.checkFormTitle();
+        practiceFormPage.checkTable("Student name", firstName + " " + lastName);
+        practiceFormPage.checkTable("Student Email", email);
+        practiceFormPage.checkTable("Gender", this.gender);
+        practiceFormPage.checkTable("Mobile", phone);
+        practiceFormPage.checkTable("Date of Birth", day + " " + month + "," + year);
+        practiceFormPage.checkTable("Subjects", subject);
+        practiceFormPage.checkTable("Hobbies", hobbies);
+        practiceFormPage.checkTable("Picture", FILENAME);
+        practiceFormPage.checkTable("Address", currentAddress);
+        practiceFormPage.checkTable("State and City", state + " " + city);
     }
+
 }

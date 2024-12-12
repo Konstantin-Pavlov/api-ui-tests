@@ -3,19 +3,33 @@ package demoqa_ui;
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
 
-import static com.codeborne.selenide.Condition.visible;
-import static com.codeborne.selenide.Selenide.$;
-import static com.codeborne.selenide.Selenide.$x;
+import java.io.File;
+
+import static com.codeborne.selenide.CollectionCondition.texts;
+import static com.codeborne.selenide.Condition.text;
+import static com.codeborne.selenide.Selectors.byText;
+import static com.codeborne.selenide.Selenide.*;
 
 public class PracticeFormPage {
+    private final SelenideElement formButtonMainPage = $x("//h5[text()='Forms']");
+    private final SelenideElement formButtonLeftSide = $x("//span[text()='Practice Form']");
     private final SelenideElement firstName = $x("//input[@id='firstName']");
     private final SelenideElement lastName = $("#lastName");
     private final SelenideElement email = $("#userEmail");
-    private final SelenideElement gender = $("#gender-radio-3");
+    private final SelenideElement phoneNumber = $("#userNumber");
+    private final SelenideElement subject = $("#subjectsInput");
+    private final SelenideElement currentAddress = $("#currentAddress");
 
     public PracticeFormPage(String url) {
         Selenide.open(url);
-        firstName.shouldBe(visible);
+    }
+
+    public void openFormsPage() {
+        formButtonMainPage.click();
+    }
+
+    public void pressFormButtonLeftSide() {
+        formButtonLeftSide.click();
     }
 
     public void setFirstName(String firstName) {
@@ -37,12 +51,51 @@ public class PracticeFormPage {
         $x("//label[text()='" + gender + "']").click();
     }
 
-
-    public String getFirstNameValue() {
-        return firstName.getValue();
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber.setValue(phoneNumber);
     }
 
-    public String getLastNameValue() {
-        return lastName.getValue();
+    public void setDateOfBirth(String year, String month, String day) {
+        $("#dateOfBirthInput").click();
+        $(".react-datepicker__month-select").selectOption(month);
+        $(".react-datepicker__year-select").selectOption(year);
+        $(".react-datepicker__day--0" + day).click();
+    }
+
+    public void setSubject(String subject) {
+        this.subject.setValue(subject).pressEnter();
+    }
+
+    public void setHobie(String hobie) {
+        $("#hobbiesWrapper").$(byText(hobie)).click();
+    }
+
+    public void setCurrentAddress(String address) {
+        currentAddress.setValue(address);
+    }
+
+    public void setCurrentState(String state) {
+        $("#react-select-3-input").setValue(state).pressEnter();
+    }
+
+    public void setCurrentCity(String city) {
+        $("#react-select-4-input").setValue(city).pressEnter();
+    }
+
+    public void uploadFile(String filepath, String filename) {
+        $("#uploadPicture").uploadFile(new File(filepath + filename));
+    }
+
+    public void submitForm() {
+        $("#submit").click();
+    }
+
+    public void checkFormTitle() {
+        //Проверяем заполнение анкеты
+        $("#example-modal-sizes-title-lg").shouldHave(text("Thanks for submitting the form"));
+    }
+
+    public void checkTable(String checkname, String actualResult) {
+        $$(".table-responsive tr").filterBy(text(checkname)).shouldHave(texts(actualResult));
     }
 }
