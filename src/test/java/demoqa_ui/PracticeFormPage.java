@@ -2,6 +2,9 @@ package demoqa_ui;
 
 import com.codeborne.selenide.Selenide;
 import com.codeborne.selenide.SelenideElement;
+import io.qameta.allure.Attachment;
+import io.qameta.allure.Step;
+import org.openqa.selenium.OutputType;
 
 import java.io.File;
 
@@ -87,7 +90,8 @@ public class PracticeFormPage {
     }
 
     public void submitForm() {
-        $("#submit").click();
+        Selenide.sleep(2000);
+        $("#submit").scrollIntoView(true).click();
     }
 
     public void checkFormTitle() {
@@ -97,5 +101,11 @@ public class PracticeFormPage {
 
     public void checkTable(String checkname, String actualResult) {
         $$(".table-responsive tr").filterBy(text(checkname)).shouldHave(texts(actualResult));
+    }
+
+    @Attachment(value = "Screenshot", type = "image/png")
+    @Step("Taking a screenshot")
+    public byte[] takeScreenshot() {
+        return Selenide.screenshot(OutputType.BYTES);
     }
 }

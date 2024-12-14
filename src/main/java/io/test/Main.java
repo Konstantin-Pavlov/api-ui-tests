@@ -1,4 +1,4 @@
-package in.reqres;
+package io.test;
 
 public class Main {
     public static void main(String[] args) {
