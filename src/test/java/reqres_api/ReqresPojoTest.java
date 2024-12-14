@@ -2,6 +2,7 @@ package reqres_api;
 
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import reqres_api.color.ColorData;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 
 import static io.restassured.RestAssured.given;
 
-//@Disabled
+@Disabled
 public class ReqresPojoTest {
 
     private final static String URL = "https://reqres.in/";

@@ -74,8 +74,7 @@ public class PracticeFormTest extends BaseSelenideTest {
 
         practiceFormPage.checkFormTitle();
         practiceFormPage.checkTable("Student name", firstName + " " + lastName);
-//        practiceFormPage.checkTable("Student Email", email);
-        practiceFormPage.checkTable("Student Email", "фыв33ЫВА");
+        practiceFormPage.checkTable("Student Email", "ololo"); // incorrect test (correct -> email)
         practiceFormPage.checkTable("Gender", this.gender);
         practiceFormPage.checkTable("Mobile", phone);
         practiceFormPage.checkTable("Date of Birth", day + " " + month + "," + year);
