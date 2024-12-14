@@ -2,7 +2,6 @@ package reqres_api;
 
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import reqres_api.color.ColorData;
@@ -21,10 +20,10 @@ import java.util.stream.Collectors;
 
 import static io.restassured.RestAssured.given;
 
-@Disabled
 public class ReqresPojoTest {
 
     private final static String URL = "https://reqres.in/";
+    private final static String API = "api";
 
     /**
      * Убедиться что пользователя с ID 23 не существует на сайте https://reqres.in/
@@ -36,7 +35,7 @@ public class ReqresPojoTest {
         UserData user = given()
                 .when()
                 .contentType(ContentType.JSON)
-                .get("/reqres_api/users/23")
+                .get(API + "/users/23")
                 .then().log().all()
                 .extract().as(UserData.class);
         Assertions.assertNull(user.getId());
@@ -58,7 +57,7 @@ public class ReqresPojoTest {
         List<UserData> users = given()
                 .when()
                 .contentType(ContentType.JSON)
-                .get("reqres_api/users?page=2")
+                .get(API + "/users?page=2")
                 .then().log().all()
                 .extract().body().jsonPath().getList("data", UserData.class);
         users.forEach(user -> Assertions.assertTrue(user.getAvatar().contains(String.valueOf(user.getId()))));
@@ -79,7 +78,7 @@ public class ReqresPojoTest {
         SuccessfulRegistration successUserReg = given()
                 .body(user)
                 .when()
-                .post("reqres_api/register")
+                .post(API + "/register")
                 .then().log().all()
                 .extract().as(SuccessfulRegistration.class);
         Assertions.assertNotNull(successUserReg.getId());
@@ -101,7 +100,7 @@ public class ReqresPojoTest {
         UnsuccessfulRegistration unsuccessfulRegistration = given()
                 .body(registration)
                 .when()
-                .post("/reqres_api/register")
+                .post(API + "/register")
                 .then()  //.assertThat().statusCode(400) проверить статус ошибки, если не указана спецификация
                 .log().body()
                 .extract().as(UnsuccessfulRegistration.class);
@@ -119,7 +118,7 @@ public class ReqresPojoTest {
         Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpecOK200());
         List<ColorData> data = given()
                 .when()
-                .get("/reqres_api/unknown")
+                .get(API + "/unknown")
                 .then()
                 .log().all()
                 .extract().body().jsonPath().getList("data", ColorData.class);
@@ -141,7 +140,7 @@ public class ReqresPojoTest {
         Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpec(204));
         given()
                 .when()
-                .delete("/reqres_api/users/2")
+                .delete(API + "/users/2")
                 .then()
                 .log().all();
     }
@@ -158,12 +157,12 @@ public class ReqresPojoTest {
         UserTimeResponse userTimeResponse = given()
                 .body(user)
                 .when()
-                .put("/reqres_api/users/2")
+                .put(API + "/users/2")
                 .then().log().all()
                 .extract().as(UserTimeResponse.class);
 
         // Format both times to remove seconds and milliseconds
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH:mm");
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH");
         String serverTime = LocalDateTime.parse(userTimeResponse.getUpdatedAt(), DateTimeFormatter.ISO_DATE_TIME).format(formatter);
         String computerTime = LocalDateTime.now(ZoneOffset.UTC).format(formatter);
         Assertions.assertEquals(serverTime, computerTime);

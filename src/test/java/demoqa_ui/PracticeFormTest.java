@@ -4,7 +4,6 @@ import com.github.javafaker.Faker;
 import io.qameta.allure.*;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.RepeatedTest;
 import org.junit.jupiter.api.Test;
 
 public class PracticeFormTest extends BaseSelenideTest {
@@ -74,7 +73,7 @@ public class PracticeFormTest extends BaseSelenideTest {
 
         practiceFormPage.checkFormTitle();
         practiceFormPage.checkTable("Student name", firstName + " " + lastName);
-        practiceFormPage.checkTable("Student Email", "ololo"); // incorrect test (correct -> email)
+        practiceFormPage.checkTable("Student Email", email);
         practiceFormPage.checkTable("Gender", this.gender);
         practiceFormPage.checkTable("Mobile", phone);
         practiceFormPage.checkTable("Date of Birth", day + " " + month + "," + year);

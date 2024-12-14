@@ -4,7 +4,6 @@ import io.restassured.path.json.JsonPath;
 import io.restassured.response.Response;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.Disabled;
 
 import java.util.HashMap;
 import java.util.List;
@@ -14,16 +13,16 @@ import static io.restassured.RestAssured.given;
 import static org.hamcrest.Matchers.equalTo;
 import static org.hamcrest.Matchers.notNullValue;
 
-@Disabled
 public class ReqresNoPojoTest {
     private final static String URL = "https://reqres.in/";
+    private final static String API = "api";
 
     @Test
     public void checkAvatarsNoPojoTest() {
         Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpecOK200());
         Response response = given()
                 .when()
-                .get("reqres_api/users?page=2")
+                .get(API + "/users?page=2")
                 .then().log().all()
                 .body("page", equalTo(2))
                 .body("data.id", notNullValue())
@@ -56,7 +55,7 @@ public class ReqresNoPojoTest {
         Response response = given()
                 .body(user)
                 .when()
-                .post("reqres_api/register")
+                .post(API + "/register")
                 .then().log().all()
                 .extract().response();
         JsonPath jsonPath = response.jsonPath();
@@ -76,7 +75,7 @@ public class ReqresNoPojoTest {
         Response response = given()
                 .body(user)
                 .when()
-                .post("reqres_api/users")
+                .post(API + "/users")
                 .then().log().all()
                 .extract().response();
         JsonPath jsonPath = response.jsonPath();
@@ -90,7 +89,7 @@ public class ReqresNoPojoTest {
         Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpec(204));
         given()
                 .when()
-                .delete("reqres_api/users/2")
+                .delete(API + "/users/2")
                 .then().log().all();
     }
 
@@ -104,7 +103,7 @@ public class ReqresNoPojoTest {
         Response response = given()
                 .body(user)
                 .when()
-                .post("reqres_api/login")
+                .post(API + "/login")
                 .then().log().all()
                 .extract().response();
         JsonPath jsonPath = response.jsonPath();
@@ -121,7 +120,7 @@ public class ReqresNoPojoTest {
         Response response = given()
                 .body(user)
                 .when()
-                .post("reqres_api/login")
+                .post(API + "/login")
                 .then().log().all()
                 .extract().response();
         JsonPath jsonPath = response.jsonPath();
@@ -134,7 +133,7 @@ public class ReqresNoPojoTest {
         Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpecNotFound404());
         given()
                 .when()
-                .get("reqres_api/unknown/23")
+                .get(API + "/unknown/23")
                 .then().log().all();
     }
 
@@ -143,7 +142,7 @@ public class ReqresNoPojoTest {
         Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpecOK200());
         Response response = given()
                 .when()
-                .get("reqres_api/unknown")
+                .get(API + "/unknown")
                 .then().log().all()
                 .body("data.year", notNullValue())
                 .extract().response();
