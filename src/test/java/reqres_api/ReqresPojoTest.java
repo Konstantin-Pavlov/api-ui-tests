@@ -1,5 +1,9 @@
 package reqres_api;
 
+import io.restassured.http.ContentType;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 import reqres_api.color.ColorData;
 import reqres_api.registration.Registration;
 import reqres_api.registration.SuccessfulRegistration;
@@ -7,10 +11,6 @@ import reqres_api.registration.UnsuccessfulRegistration;
 import reqres_api.user.UserData;
 import reqres_api.user.UserTime;
 import reqres_api.user.UserTimeResponse;
-import io.restassured.http.ContentType;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
@@ -20,6 +20,7 @@ import java.util.stream.Collectors;
 
 import static io.restassured.RestAssured.given;
 
+//@Disabled
 public class ReqresPojoTest {
 
     private final static String URL = "https://reqres.in/";
@@ -149,9 +150,9 @@ public class ReqresPojoTest {
      */
     @Test
     @DisplayName("Время сервера и компьютера совпадают")
-    public void checkServerAndPcDateTest(){
+    public void checkServerAndPcDateTest() {
         Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpecOK200());
-        UserTime user = new UserTime("morpheus","zion resident");
+        UserTime user = new UserTime("morpheus", "zion resident");
 
         UserTimeResponse userTimeResponse = given()
                 .body(user)
