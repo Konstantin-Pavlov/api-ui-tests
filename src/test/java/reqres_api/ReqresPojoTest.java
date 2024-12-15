@@ -1,5 +1,6 @@
 package reqres_api;
 
+import config.ConfigProvider;
 import io.restassured.http.ContentType;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.DisplayName;
@@ -22,14 +23,14 @@ import static io.restassured.RestAssured.given;
 
 public class ReqresPojoTest {
 
-    private final static String URL = "https://reqres.in/";
-    private final static String API = "api";
+    private final static String URL = ConfigProvider.getConfig().url();
+    private final static String API = ConfigProvider.getConfig().api();
 
     /**
-     * Убедиться что пользователя с ID 23 не существует на сайте https://reqres.in/
+     * Ensure that a user with ID 23 does not exist on the website https://reqres.in/
      */
     @Test
-    @DisplayName("Пользователь с id 23 не существует")
+    @DisplayName("User with ID 23 does not exist")
     public void checkUserNotFound() {
         Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpecNotFound404());
         UserData user = given()
@@ -46,12 +47,12 @@ public class ReqresPojoTest {
     }
 
     /**
-     * 1. Получить список пользователей со второй страница на сайте https://reqres.in/
-     * 2. Убедиться что id пользователей содержаться в их avatar;
-     * 3. Убедиться, что email пользователей имеет окончание reqres.in;
+     * 1. Get a list of users from the second page on the website https://reqres.in/
+     * 2. Ensure that user IDs are included in their avatars;
+     * 3. Ensure that user emails end with 'reqres.in';
      */
     @Test
-    @DisplayName("Аватары содержат айди пользователей")
+    @DisplayName("Avatars contain user IDs")
     public void checkAvatarContainsIdTest() {
         Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpecOK200());
         List<UserData> users = given()
@@ -65,11 +66,11 @@ public class ReqresPojoTest {
     }
 
     /**
-     * 1. Используя сервис https://reqres.in/ протестировать регистрацию пользователя в системе
-     * 2. Тест для успешной регистрации
+     * 1. Use the service https://reqres.in/ to test user registration in the system
+     * 2. Test for successful registration
      */
     @Test
-    @DisplayName("Успешная регистрация")
+    @DisplayName("Successful Registration")
     public void successUserRegTest() {
         Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpecOK200());
         Integer UserId = 4;
@@ -88,11 +89,11 @@ public class ReqresPojoTest {
     }
 
     /**
-     * 1. Используя сервис https://reqres.in/ протестировать регистрацию пользователя в системе
-     * 2. Тест для неуспешной регистрации (не введен пароль)
+     * 1. Use the service https://reqres.in/ to test user registration in the system
+     * 2. Test for unsuccessful registration (no password provided)
      */
     @Test
-    @DisplayName("Не успешная регистрация")
+    @DisplayName("Unsuccessful Registration")
     public void unsuccessfulUserRegistrationNoPojo() {
         Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpecError400());
 
@@ -101,7 +102,7 @@ public class ReqresPojoTest {
                 .body(registration)
                 .when()
                 .post(API + "/register")
-                .then()  //.assertThat().statusCode(400) проверить статус ошибки, если не указана спецификация
+                .then()  //.assertThat().statusCode(400) check error status, if specification is not defined
                 .log().body()
                 .extract().as(UnsuccessfulRegistration.class);
         Assertions.assertNotNull(unsuccessfulRegistration.getError());
@@ -109,11 +110,11 @@ public class ReqresPojoTest {
     }
 
     /**
-     * Используя сервис https://reqres.in/ убедиться, что операция LIST<RESOURCE> возвращает данные,
-     * отсортированные по годам.
+     * Using the service https://reqres.in/, ensure that the operation LIST<RESOURCE> returns data
+     * sorted by year.
      */
     @Test
-    @DisplayName("Года правильно отсортированы")
+    @DisplayName("Years are sorted correctly")
     public void checkSortedYearsTest() {
         Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpecOK200());
         List<ColorData> data = given()
@@ -131,11 +132,11 @@ public class ReqresPojoTest {
     }
 
     /**
-     * Тест 4.1
-     * Используя сервис https://reqres.in/ попробовать удалить второго пользователя и сравнить статус-код
+     * Test 4.1
+     * Use the service https://reqres.in/ to try to delete the second user and compare the status code
      */
     @Test
-    @DisplayName("Удаление пользователя")
+    @DisplayName("Delete user")
     public void deleteUserTest() {
         Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpec(204));
         given()
@@ -146,10 +147,11 @@ public class ReqresPojoTest {
     }
 
     /**
-     * Используя сервис https://reqres.in/ обновить информацию о пользователе и сравнить дату обновления с текущей датой на машине
+     * Use the service https://reqres.in/ to update user information and compare the update date with
+     * the current date on the machine.
      */
     @Test
-    @DisplayName("Время сервера и компьютера совпадают")
+    @DisplayName("Server and computer time match")
     public void checkServerAndPcDateTest() {
         Specifications.installSpecification(Specifications.requestSpec(URL), Specifications.responseSpecOK200());
         UserTime user = new UserTime("morpheus", "zion resident");
@@ -168,4 +170,5 @@ public class ReqresPojoTest {
         Assertions.assertEquals(serverTime, computerTime);
     }
 }
+
 
