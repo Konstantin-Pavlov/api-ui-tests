@@ -131,6 +131,17 @@ reqres.in-rest-test/
 #### Browser Interactions
 - Validates UI elements and interactions, including button clicks and field validation.
 
+## Allure Report screenshots:
+
+<details>
+  <summary>Click to expand</summary>
+
+![Allure Report Screenshot 1](screenshots/allure_report_1.jpg)
+
+![Allure Report Screenshot 2](screenshots/allure_report_2.jpg)
+
+</details>
+
 ## Contributing
 
 Contributions are welcome! Feel free to submit a pull request or report issues.
