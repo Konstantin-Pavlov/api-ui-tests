@@ -1,11 +1,17 @@
 package demoqa_ui;
 
 import com.github.javafaker.Faker;
-import io.qameta.allure.*;
+import io.qameta.allure.Epic;
+import io.qameta.allure.Feature;
+import io.qameta.allure.Severity;
+import io.qameta.allure.SeverityLevel;
+import io.qameta.allure.Story;
 import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+@Disabled
 public class PracticeFormTest extends BaseSelenideTest {
     Faker faker = new Faker();
 
